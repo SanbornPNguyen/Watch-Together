@@ -1,0 +1,25 @@
+{
+  "name": "watch-together",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SanbornPNguyen/Watch-Together.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SanbornPNguyen/Watch-Together/issues"
+  },
+  "homepage": "https://github.com/SanbornPNguyen/Watch-Together#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0",
+    "ytdl-core": "^3.2.2"
+  }
+}
