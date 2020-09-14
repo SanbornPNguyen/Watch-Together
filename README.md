@@ -1,2 +1,2 @@
 # Watch-Together
-A solution for watching synced videos together with friends
+A solution for watching videos online with friends without worrying about streaming.
