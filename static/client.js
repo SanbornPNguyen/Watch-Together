@@ -1,24 +1,45 @@
 const socket = io();
 
+// Home page elements
+const createButton = document.getElementById("create");
+const joinButton = document.getElementById("joinsubmit");
+const roomTitle = document.getElementById("room");
+const homeTitle = document.getElementById("title");
+const homePage = document.getElementById("home");
+const contentPage = document.getElementById("content");
+
+// Video player elements
 const video = document.getElementById("player");
 const table = document.getElementById("users");
 const newvid = document.getElementById("newvideo");
 
-socket.emit("new user");
+let room = undefined;
 
-socket.on("play at time", function(time) {
-    video.currentTime = time;
+createButton.setAttribute("onclick", "createRoom();");
+createButton.onclick = () => {
+    socket.emit("create");
+}
+
+joinButton.setAttribute("onclick", "joinRoom();");
+joinButton.onclick = () => {
+    const textBox = document.getElementById("roomcode");
+    const code = textBox.value;
+    socket.emit("join", code.toString());
+    textBox.value = "";
+}
+
+socket.on("joinState", function(data) {
+    if (data === "room not found") {
+        homeTitle.innerHTML = "Invalid room ID";
+    } else {
+        room = data;
+        homePage.setAttribute("hidden", "");
+        contentPage.removeAttribute("hidden");
+        roomTitle.innerHTML = "Room code: " + data;
+    }
 });
 
-socket.on("play", function() {
-    video.play();
-});
-
-socket.on("pause", function() {
-    video.pause();
-});
-
-socket.on("clicked submit", function() {
+socket.on("submitURL", function() {
     const textBox = document.getElementById("videoURL");
     
     textBox.value = "";
@@ -30,10 +51,22 @@ socket.on("change video", function(data) {
     newvid.removeAttribute("hidden");
 });
 
+socket.on("play", function() {
+    video.play();
+});
+
+socket.on("pause", function() {
+    video.pause();
+});
+
+socket.on("playAtTime", (time) => {
+    video.currentTime = time;
+});
+
 let row_prev_length = 0;
 let times_arr = [];
 
-socket.on("state server", function(data) {
+socket.on("serverState", function(data) {
     if (Object.keys(data).length != row_prev_length) {
         row_prev_length = Object.keys(data).length;
 
@@ -77,7 +110,7 @@ submitButton.setAttribute("onclick", "submit();");
 submitButton.onclick = function submit() {
     const textBox = document.getElementById("videoURL");
     const URL = textBox.value;
-    socket.emit("new video", URL);
+    socket.emit("submitVideo", URL);
 
     textBox.value = "";
     newvid.setAttribute("hidden", "");
@@ -86,37 +119,39 @@ submitButton.onclick = function submit() {
 const syncToMeButton = document.getElementById("syncme");
 syncToMeButton.setAttribute("onclick", "syncToMe();");
 syncToMeButton.onclick = function syncToMe() {
-    socket.emit("send time", video.currentTime);
+    socket.emit("sendTime", video.currentTime);
 };
 
 const syncToEarliestButton = document.getElementById("syncearliest");
 syncToEarliestButton.setAttribute("onclick", "syncToEarliest();");
 syncToEarliestButton.onclick = function syncToEarliest() {
     times_arr.sort(function(a, b){return a - b});
-    socket.emit("send time", times_arr[0]);
+    socket.emit("sendTime", times_arr[0]);
 };
 
 const syncToFurthestButton = document.getElementById("syncfurthest");
 syncToFurthestButton.setAttribute("onclick", "syncToFurthest();");
 syncToFurthestButton.onclick = function syncToFurthest() {
     times_arr.sort(function(a, b){return b - a});
-    socket.emit("send time", times_arr[0]);
+    socket.emit("sendTime", times_arr[0]);
 };
 
 const playButton = document.getElementById("play");
 playButton.setAttribute("onclick", "play();");
 playButton.onclick = function play() {
-    socket.emit("click play");
+    socket.emit("clickPlay");
 };
 
 const pauseButton = document.getElementById("pause");
 pauseButton.setAttribute("onclick", "pause();");
 pauseButton.onclick = function pause() {
-    socket.emit("click pause");
+    socket.emit("clickPause");
 };
 
 setInterval(function() {
-    socket.emit("state", {
-        currentTime: video.currentTime
-    });
+    if (room !== undefined) {
+        socket.emit("clientState", {
+            currentTime: video.currentTime
+        });
+    }
 }, 1000 / 20);

@@ -1,45 +1,54 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Project Online</title>
+        <title>Watch Together</title>
         <link rel="stylesheet" href="/static/style.css">
         <script src="/socket.io/socket.io.js"></script>
     </head>
     <body>
-        <h1>Project Online</h1>
-        <div id="newvideo">
-            Input URL for new video:
-            <input type="text" id="videoURL">
-            <input type="submit" value="Submit" id="submit">
+        <div id="home">
+            <h1 id="title">Home page</h1>
+            <button id="create">Create a new room</button>
+            <div id="join">
+                <input type="text" id="roomcode">
+                <input type="submit" value="Join an existing room via room code" id="joinsubmit">
+            </div>
         </div>
-        <div id="video">
-            <video id="player" controls>
-                <source src="./static/videos/video.mp4" type="video/mp4" />
-            </video>
-        </div>
-        <div id="usertable">
-            <table id="users">
-                <thead>
-                    <tr>
-                        <th>Socket ID</th>
-                        <th>Current Time</th>
-                        <th>Sync</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
-        <div id="buttons">
-            <button id="play">Play video for all users</button>
-            <button id="pause">Pause video for all users</button>
-            <br>
-            <button id="syncme">Sync all users to me</button>
-            <button id="syncearliest">Sync all users to the user earliest in the video</button>
-            <button id="syncfurthest">Sync all users to the user furthest in the video</button>
-            <br>
+        <div id="content" hidden>
+            <h1 id="room"></h1>
+            <div id="newvideo">
+                Input URL for new video:
+                <input type="text" id="videoURL">
+                <input type="submit" value="Submit" id="submit">
+            </div>
+            <div id="video">
+                <video id="player" controls>
+                    <source src="./static/videos/video.mp4" type="video/mp4" />
+                </video>
+            </div>
+            <div id="usertable">
+                <table id="users">
+                    <thead>
+                        <tr>
+                            <th>Socket ID</th>
+                            <th>Current Time</th>
+                            <th>Sync</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div id="buttons">
+                <button id="play">Play video for all users</button>
+                <button id="pause">Pause video for all users</button>
+                <br>
+                <button id="syncme">Sync all users to me</button>
+                <button id="syncearliest">Sync all users to the user earliest in the video</button>
+                <button id="syncfurthest">Sync all users to the user furthest in the video</button>
+                <br>
+            </div>
         </div>
     </body>
     <script src="/static/client.js"></script>
-
 </html>
