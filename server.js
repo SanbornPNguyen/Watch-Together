@@ -77,7 +77,11 @@ io.on("connection", function(socket) {
     });
 
     socket.on("submitVideo", () => {
-        // Download video somehow, we'll do this later
+        io.to(findRoom(socket.id)).emit("submittedURL");
+
+        
+
+        io.to(findRoom(socket.id)).emit("loadVideo"); // When done
     });
 
     socket.on("sendTime", (time) => {
