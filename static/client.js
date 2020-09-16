@@ -39,14 +39,14 @@ socket.on("joinState", function(data) {
     }
 });
 
-socket.on("submitURL", function() {
+socket.on("submittedURL", function() {
     const textBox = document.getElementById("videoURL");
     
     textBox.value = "";
     newvid.setAttribute("hidden", "");
 });
 
-socket.on("change video", function(data) {
+socket.on("loadVideo", function(data) {
     video.load();
     newvid.removeAttribute("hidden");
 });
