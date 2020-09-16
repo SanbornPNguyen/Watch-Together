@@ -36,6 +36,9 @@ socket.on("joinState", function(data) {
         homePage.setAttribute("hidden", "");
         contentPage.removeAttribute("hidden");
         roomTitle.innerHTML = "Room code: " + data;
+
+        video.removeAttribute("src");
+        video.setAttribute("src", "./static/videos/" + data + ".mp4");
     }
 });
 
@@ -47,7 +50,7 @@ socket.on("submittedURL", function() {
 });
 
 socket.on("loadVideo", function(data) {
-    video.load();
+        video.load();
     newvid.removeAttribute("hidden");
 });
 
