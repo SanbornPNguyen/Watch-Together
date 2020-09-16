@@ -71,17 +71,34 @@ io.on("connection", function(socket) {
                 delete rooms[room].users[socket.id];
             }
             if (Object.keys(rooms[room].users).length === 0) {
+                // This doesn't run because we removed the socket.id from the list of rooms above already
+                // Whoops, might want to rearrange the code somehow
+                let path = "./static/videos/" + findRoom(socket.id) + ".mp4";
+                fs.unlink(path, (err) => {
+                    console.log(err);
+                });
+
                 delete rooms[room];
             }
+            
+            
         });
     });
 
-    socket.on("submitVideo", () => {
+    socket.on("submitVideo", (URL) => {
         io.to(findRoom(socket.id)).emit("submittedURL");
 
+        ytdl(URL, {filter:"audioandvideo",quality:"highestvideo"})
+            .pipe(fs.createWriteStream("./static/videos/" + findRoom(socket.id) + ".mp4")
+                    .on("error", function(err) {
+                    })
+                    .on("finish", function() {
+                    })
+                    )
+            .on("finish", function() {
+                io.to(findRoom(socket.id)).emit("loadVideo", findRoom(socket.id));
+            });
         
-
-        io.to(findRoom(socket.id)).emit("loadVideo"); // When done
     });
 
     socket.on("sendTime", (time) => {
