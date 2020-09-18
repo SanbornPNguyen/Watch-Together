@@ -67,20 +67,18 @@ io.on("connection", function(socket) {
     socket.on("disconnect", () => {
         const allRooms = Object.keys(rooms);
         allRooms.forEach((room) => {
-            if (Object.keys(rooms[room].users).includes(socket.id)) {
-                delete rooms[room].users[socket.id];
-            }
-            if (Object.keys(rooms[room].users).length === 0) {
-                // This doesn't run because we removed the socket.id from the list of rooms above already
-                // Whoops, might want to rearrange the code somehow
+            
+            if (Object.keys(rooms[room].users).length === 1) {
                 let path = "./static/videos/" + findRoom(socket.id) + ".mp4";
                 fs.unlink(path, (err) => {
                     console.log(err);
                 });
 
+                delete rooms[room].users[socket.id];
                 delete rooms[room];
+            } else if (Object.keys(rooms[room].users).includes(socket.id)) {
+                delete rooms[room].users[socket.id];
             }
-            
             
         });
     });
@@ -119,6 +117,7 @@ io.on("connection", function(socket) {
 });
 
 setInterval(() => {
+    console.log(rooms);
     if (Object.keys(rooms).length > 0) {
         const allRooms = Object.keys(rooms);
         allRooms.forEach((room) => {
