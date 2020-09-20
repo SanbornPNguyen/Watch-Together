@@ -20,7 +20,11 @@ createButton.onclick = () => {
     const nameInput = document.getElementById("name");
     const name = nameInput.value;
 
-    socket.emit("create", name);
+    if (name == "") {
+        alert("You must put something for your name");
+    } else {
+        socket.emit("create", name);
+    }
 }
 
 joinButton.setAttribute("onclick", "joinRoom();");
@@ -31,13 +35,19 @@ joinButton.onclick = () => {
     const nameInput = document.getElementById("name");
     const name = nameInput.value;
 
-    socket.emit("join", code.toString(), name);
-    textBox.value = "";
+    if (name == "") {
+        alert("You must put something for your name");
+    } else if (code == "") {
+        alert("Invalid room ID");
+    } else {
+        socket.emit("join", code.toString(), name);
+        textBox.value = "";
+    }
 }
 
 socket.on("joinState", function(data) {
     if (data === "room not found") {
-        homeTitle.innerHTML = "Invalid room ID";
+        alert("Invalid room ID");
     } else {
         room = data;
         homePage.setAttribute("hidden", "");
