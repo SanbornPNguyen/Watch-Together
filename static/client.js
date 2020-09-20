@@ -17,14 +17,21 @@ let room = undefined;
 
 createButton.setAttribute("onclick", "createRoom();");
 createButton.onclick = () => {
-    socket.emit("create");
+    const nameInput = document.getElementById("name");
+    const name = nameInput.value;
+
+    socket.emit("create", name);
 }
 
 joinButton.setAttribute("onclick", "joinRoom();");
 joinButton.onclick = () => {
     const textBox = document.getElementById("roomcode");
     const code = textBox.value;
-    socket.emit("join", code.toString());
+
+    const nameInput = document.getElementById("name");
+    const name = nameInput.value;
+
+    socket.emit("join", code.toString(), name);
     textBox.value = "";
 }
 
@@ -90,7 +97,7 @@ socket.on("serverState", function(data) {
                 video.currentTime = document.getElementById(id).innerHTML;
             };
 
-            row.insertCell(0).innerHTML = id;
+            row.insertCell(0).innerHTML = user.name;
             row.insertCell(1).setAttribute("id", id);
             document.getElementById(id).innerHTML = user.currentTime;
 
@@ -153,8 +160,6 @@ pauseButton.onclick = function pause() {
 
 setInterval(function() {
     if (room !== undefined) {
-        socket.emit("clientState", {
-            currentTime: video.currentTime
-        });
+        socket.emit("clientState", video.currentTime);
     }
 }, 1000 / 20);

@@ -36,7 +36,7 @@ function findRoom(socketID) {
 }
 
 io.on("connection", function(socket) {
-    socket.on("create", () => {
+    socket.on("create", (name) => {
         let room = (Math.floor(Math.random() * 100000)).toString();
 
         while (Object.keys(rooms).includes(room)) {
@@ -48,15 +48,19 @@ io.on("connection", function(socket) {
             users: {}
         }
 
-        rooms[room].users[socket.id] = undefined;
+        rooms[room].users[socket.id] = {
+            name: name
+        };
 
         socket.join(room);
         socket.emit("joinState", room);
     });
 
-    socket.on("join", (room) => {
+    socket.on("join", (room, name) => {
         if (Object.keys(rooms).includes(room)) {
-            rooms[room].users[socket.id] = undefined;
+            rooms[room].users[socket.id] = {
+                name: name
+            };
             socket.join(room);
             socket.emit("joinState", room);
         } else {
@@ -111,13 +115,12 @@ io.on("connection", function(socket) {
         io.to(findRoom(socket.id)).emit("pause");
     });
 
-    socket.on("clientState", (data) => {
-        rooms[findRoom(socket.id)].users[socket.id] = data;
+    socket.on("clientState", (userTime) => {
+        rooms[findRoom(socket.id)].users[socket.id].currentTime = userTime;
     });
 });
 
 setInterval(() => {
-    console.log(rooms);
     if (Object.keys(rooms).length > 0) {
         const allRooms = Object.keys(rooms);
         allRooms.forEach((room) => {
