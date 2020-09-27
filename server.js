@@ -97,8 +97,11 @@ io.on("connection", function(socket) {
                     .on("finish", function() {
                     })
                     )
+            .on("error", () => {
+                io.to(findRoom(socket.id)).emit("loadVideo");
+            })
             .on("finish", function() {
-                io.to(findRoom(socket.id)).emit("loadVideo", findRoom(socket.id));
+                io.to(findRoom(socket.id)).emit("loadVideo");
             });
         
     });

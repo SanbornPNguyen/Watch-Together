@@ -67,8 +67,12 @@ socket.on("submittedURL", function() {
 });
 
 socket.on("loadVideo", function(data) {
-        video.load();
     newvid.removeAttribute("hidden");
+    if (data === "error") {
+        alert("Invalid youtube link.");
+    } else {
+        video.load();
+    }
 });
 
 socket.on("play", function() {
